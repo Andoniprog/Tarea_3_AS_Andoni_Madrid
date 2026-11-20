@@ -191,4 +191,4 @@ Start the app with `./gradlew run`. Then run the client in a second terminal:
 
 ---
 &copy; 2026 Diego Urrutia-Astorga, Arquitectura de Software, Universidad Católica del Norte.
-# Tarea_2_AS_Andoni_Madrid
+# Tarea_3_AS_Andoni_Madrid

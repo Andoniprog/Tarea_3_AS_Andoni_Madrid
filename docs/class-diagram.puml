@@ -181,19 +181,21 @@ package "model" <<model>> {
     - double overdueFee
     + Loan()
     + Loan(Member, Book, String, String)
+    + Loan(Member, Book, LocalDate, LocalDate)
     + getId() : int
     + setId(int) : void
     + getMember() : Member
     + setMember(Member) : void
     + getBook() : Book
     + setBook(Book) : void
-    + getLoanDate() : String
-    + setLoanDate(String) : void
-    + getDueDate() : String
-    + setDueDate(String) : void
-    + getReturnDate() : String
-    + setReturnDate(String) : void
+    + getLoanDate() : LocalDate
+    + setLoanDate(LocalDate) : void
+    + getDueDate() : LocalDate
+    + setDueDate(LocalDate) : void
+    + getReturnDate() : LocalDate
+    + setReturnDate(LocalDate) : void
     + isReturned() : boolean
+    + isOverdue() : boolean
     + setReturned(boolean) : void
     + getOverdueFee() : double
     + setOverdueFee(double) : void
@@ -207,6 +209,7 @@ package "model" <<model>> {
     - boolean fulfilled
     + Reservation()
     + Reservation(Member, Book, String)
+    + Reservation(Member, Book, LocalDate)
     + getId() : int
     + setId(int) : void
     + getMember() : Member
