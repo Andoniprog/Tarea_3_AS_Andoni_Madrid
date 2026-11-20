@@ -26,6 +26,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class AccruedFeeTest {
 
+    /**
+     * The Constructor. JUnit creates one instance for each test method.
+     */
+    AccruedFeeTest() {
+    }
+
     /** DAO used to create and inspect test loans. */
     private LoanDao loanDao;
 

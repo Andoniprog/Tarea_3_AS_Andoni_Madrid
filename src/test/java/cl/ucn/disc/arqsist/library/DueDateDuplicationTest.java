@@ -28,6 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class DueDateDuplicationTest {
 
+    /**
+     * The Constructor. JUnit creates one instance for each test method.
+     */
+    DueDateDuplicationTest() {
+    }
+
     /** Fixed clock shared by both services. */
     private Clock clock;
 

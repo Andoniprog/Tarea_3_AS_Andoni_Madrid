@@ -23,6 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class DatabaseSeedTest {
 
+    /**
+     * The Constructor. JUnit creates one instance for each test method.
+     */
+    DatabaseSeedTest() {
+    }
+
 
     /** Database under test, backed by an in-memory SQLite connection. */
     private Database db;

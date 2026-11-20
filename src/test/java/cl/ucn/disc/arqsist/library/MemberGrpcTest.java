@@ -28,6 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 final class MemberGrpcTest {
 
     /**
+     * The Constructor. JUnit creates one instance for each test method.
+     */
+    MemberGrpcTest() {
+    }
+
+    /**
      * Register a member, list the members, and get one member.
      *
      * @throws Exception if the server fails.

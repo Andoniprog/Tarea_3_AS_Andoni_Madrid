@@ -24,6 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 class TransactionBugTest {
 
+    /**
+     * The Constructor. JUnit creates one instance for each test method.
+     */
+    TransactionBugTest() {
+    }
+
     
     /** DAO used to create and inspect the test book. */
     private BookDao bookDao;

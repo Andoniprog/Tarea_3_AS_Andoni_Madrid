@@ -35,6 +35,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 final class MemberSearchTest {
 
     /**
+     * The Constructor. JUnit creates one instance for each test method.
+     */
+    MemberSearchTest() {
+    }
+
+    /**
      * The in-process gRPC server.
      */
     private Server server;
