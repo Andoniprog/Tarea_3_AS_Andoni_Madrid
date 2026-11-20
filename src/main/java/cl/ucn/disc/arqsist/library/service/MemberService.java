@@ -1,47 +1,64 @@
+/*
+ * Copyright (c) 2026. Arquitectura de Sistemas, DISC, UCN, Antofagasta.
+ */
+
 package cl.ucn.disc.arqsist.library.service;
 
 import cl.ucn.disc.arqsist.library.dao.MemberDao;
 import cl.ucn.disc.arqsist.library.model.Member;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Handles member registration and retrieval.
+ * The Member Service.
  */
 public final class MemberService {
 
-    /** Persistence component used for member data. */
+    /**
+     * The Member DAO.
+     */
     private final MemberDao memberDao;
 
     /**
-     * Creates the service with its member persistence component.
+     * The Constructor.
      *
-     * @param memberDao DAO used to load and persist members.
+     * @param memberDao the member DAO
      */
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
     }
 
     /**
-     * Registers and returns a member.
+     * Register a new member.
      *
-     * @param member member to register.
-     * @return the registered member.
-     * @throws SQLException if persistence fails.
+     * @param member the member to register
+     * @return the registered member
      */
-    public Member register(Member member) throws SQLException {
+    public Member register(Member member) {
         memberDao.create(member);
         return member;
     }
 
     /**
-     * Retrieves all registered members.
-     *
-     * @return all persisted members.
-     * @throws SQLException if the query fails.
+     * @return a list of all members.
      */
-    public List<Member> findAll() throws SQLException {
+    public List<Member> findAll() {
         return memberDao.findAll();
+    }
+
+    /**
+     * Find a member by ID.
+     *
+     * @param id the member ID
+     * @return the member
+     * @throws NotFoundException if the member does not exist
+     */
+    public Member findById(int id) {
+        // ORMLite returns null when the row does not exist.
+        Member member = memberDao.findById(id);
+        if (member == null) {
+            throw new NotFoundException("Member not found: " + id);
+        }
+        return member;
     }
 }

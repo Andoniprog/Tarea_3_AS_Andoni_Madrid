@@ -10,6 +10,10 @@ import java.util.List;
 
 /**
  * Provides ORMLite persistence operations for members.
+ *
+ * <p>The query methods wrap {@link SQLException} in an unchecked exception, so the
+ * member service and the gRPC adapter do not handle database checked exceptions.
+ * A database failure reaches a gRPC client as INTERNAL.</p>
  */
 public final class MemberDao {
 
@@ -30,10 +34,14 @@ public final class MemberDao {
      * Retrieves all members.
      *
      * @return all persisted members.
-     * @throws SQLException if the query fails.
+     * @throws RuntimeException if the query fails.
      */
-    public List<Member> findAll() throws SQLException {
-        return dao.queryForAll();
+    public List<Member> findAll() {
+        try {
+            return dao.queryForAll();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to load members", e);
+        }
     }
 
     /**
@@ -41,29 +49,41 @@ public final class MemberDao {
      *
      * @param id member identifier.
      * @return the matching member, or {@code null} if none exists.
-     * @throws SQLException if the query fails.
+     * @throws RuntimeException if the query fails.
      */
-    public Member findById(int id) throws SQLException {
-        return dao.queryForId(id);
+    public Member findById(int id) {
+        try {
+            return dao.queryForId(id);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to load member " + id, e);
+        }
     }
 
     /**
      * Persists a new member.
      *
      * @param member member to create.
-     * @throws SQLException if the insert fails.
+     * @throws RuntimeException if the insert fails.
      */
-    public void create(Member member) throws SQLException {
-        dao.create(member);
+    public void create(Member member) {
+        try {
+            dao.create(member);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to create member", e);
+        }
     }
 
     /**
      * Persists updates to a member.
      *
      * @param member member to update.
-     * @throws SQLException if the update fails.
+     * @throws RuntimeException if the update fails.
      */
-    public void update(Member member) throws SQLException {
-        dao.update(member);
+    public void update(Member member) {
+        try {
+            dao.update(member);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update member " + member.getId(), e);
+        }
     }
 }
