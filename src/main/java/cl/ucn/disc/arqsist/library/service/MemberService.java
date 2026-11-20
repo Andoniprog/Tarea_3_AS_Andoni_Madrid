@@ -1,68 +1,47 @@
-/*
- * Copyright (c) 2026. Arquitectura de Sistemas, DISC, UCN, Antofagasta.
- */
 package cl.ucn.disc.arqsist.library.service;
 
-import cl.ucn.disc.arqsist.library.dao.BookDao;
-import cl.ucn.disc.arqsist.library.dao.LoanDao;
 import cl.ucn.disc.arqsist.library.dao.MemberDao;
-import cl.ucn.disc.arqsist.library.model.Book;
-import cl.ucn.disc.arqsist.library.model.Loan;
 import cl.ucn.disc.arqsist.library.model.Member;
 
-import java.time.LocalDate;
+import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Handles member registration and retrieval.
+ */
+public final class MemberService {
 
-public class MemberService {
-
+    /** Persistence component used for member data. */
     private final MemberDao memberDao;
-    private final BookDao bookDao;
-    private final LoanDao loanDao;
 
-
-    public MemberService(MemberDao memberDao, BookDao bookDao, LoanDao loanDao) {
+    /**
+     * Creates the service with its member persistence component.
+     *
+     * @param memberDao DAO used to load and persist members.
+     */
+    public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
-        this.bookDao = bookDao;
-        this.loanDao = loanDao;
     }
 
-    public Member register(Member member) {
-    memberDao.create(member);
-    return member;
-}
+    /**
+     * Registers and returns a member.
+     *
+     * @param member member to register.
+     * @return the registered member.
+     * @throws SQLException if persistence fails.
+     */
+    public Member register(Member member) throws SQLException {
+        memberDao.create(member);
+        return member;
+    }
 
-
-    public List<Member> findAll() {
+    /**
+     * Retrieves all registered members.
+     *
+     * @return all persisted members.
+     * @throws SQLException if the query fails.
+     */
+    public List<Member> findAll() throws SQLException {
         return memberDao.findAll();
-    }
-
-
-    public Loan checkout(int memberId, int bookId) {
-        // 1. Validar primero el miembro. Si no existe, lanza la excepción ANTES de modificar el libro
-        Member member = memberDao.findById(memberId);
-        if (member == null) {
-            throw new NotFoundException("Member not found: " + memberId);
-        }
-
-        // 2. Obtener y validar el libro
-        Book book = bookDao.findById(bookId);
-        if (book == null) {
-            throw new NotFoundException("Book not found: " + bookId);
-        }
-        if (book.getAvailableCopies() <= 0) {
-            throw new IllegalStateException("No available copies of book " + bookId);
-        }
-
-        // 3. Decrementar copias y actualizar
-        book.setAvailableCopies(book.getAvailableCopies() - 1);
-        bookDao.update(book);
-
-        // 4. Crear préstamo usando LoanPolicy.dueDate (Requisito Change 3)
-        LocalDate today = LocalDate.now();
-        Loan loan = new Loan(member, book, today, LoanPolicy.dueDate(today));
-        loanDao.create(loan);
-
-        return loan;
     }
 }

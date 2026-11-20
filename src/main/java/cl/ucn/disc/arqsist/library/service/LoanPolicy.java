@@ -1,26 +1,29 @@
-/*
- * Copyright (c) 2026. Arquitectura de Sistemas, DISC, UCN, Antofagasta.
- */
 package cl.ucn.disc.arqsist.library.service;
+
 import java.time.LocalDate;
 
+/**
+ * Defines the standard loan duration and daily overdue fee.
+ */
+public final class LoanPolicy {
 
-public class LoanPolicy {
-    public static final int DUE_DAYS = 21;
-
+    /** Monetary fee charged for each day past the due date. */
     public static final double FEE_PER_DAY = 1.0;
 
+    /** Standard duration of a loan in days. */
+    private static final long LOAN_PERIOD_DAYS = 14;
+
+    /** Prevents instances of this policy utility class. */
     private LoanPolicy() {
-        // No instantiation
     }
-    
+
     /**
-     * Computes the due date of a loan.
+     * Calculates the due date for a loan.
      *
-     * @param loanDate the date the loan starts.
-     * @return the loan date plus {@link #DUE_DAYS} days.
+     * @param loanDate date on which the loan begins.
+     * @return the date 14 days after the loan date.
      */
     public static LocalDate dueDate(LocalDate loanDate) {
-        return loanDate.plusDays(DUE_DAYS);
-    } 
+        return loanDate.plusDays(LOAN_PERIOD_DAYS);
+    }
 }

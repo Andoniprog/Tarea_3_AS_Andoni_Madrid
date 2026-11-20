@@ -30,12 +30,10 @@ hide stereotype
 package "controller" <<controller>> {
   class BookController {
     - BookService service
-    - BookDao dao
     + register(JavalinConfig) : void
   }
 
   class LoanController {
-    - MemberService memberService
     - LoanService loanService
     + register(JavalinConfig) : void
   }
@@ -52,17 +50,6 @@ package "controller" <<controller>> {
 }
 
 package "service" <<service>> {
-
-    class LoanPolicy {
-    + {static} int DUE_DAYS = 21
-    + {static} double FEE_PER_DAY = 1.0
-    - LoanPolicy()
-    + {static} dueDate(LocalDate) : LocalDate
-  }
-
-  class NotFoundException {
-    + NotFoundException(String)
-  }
   class BookService {
     - BookDao dao
     + listAll() : List<Book>
@@ -73,28 +60,30 @@ package "service" <<service>> {
   }
 
   class LoanService {
-    - {static} int DUE_DAYS = 21
-    - LoanDao loanDao
-    - BookDao bookDao
-    + findAll() : List<Loan>
-    + returnLoan(int) : Loan
-    + overdueLoans() : List<Loan>
+  - LoanDao loanDao
+  - MemberDao memberDao
+  - BookService bookService
+  - Clock clock
+  + checkout(int, int) : Loan
+  + findAll() : List<Loan>
+  + returnLoan(int) : Loan
+  + overdueLoans() : List<Loan>
+  - withAccruedFees(List<Loan>) : List<Loan>
+  - accruedFee(Loan, LocalDate) : double
   }
 
   class MemberService {
-    - MemberDao memberDao
-    - BookDao bookDao
-    - LoanDao loanDao
-    + register(Member) : Member
-    + findAll() : List<Member>
-    + checkout(int, int) : Loan
+  - MemberDao memberDao
+  + register(Member) : Member
+  + findAll() : List<Member>
   }
 
   class ReservationService {
     - ReservationDao reservationDao
-    - BookDao bookDao
     - MemberDao memberDao
     - LoanDao loanDao
+    - BookService bookService
+    - Clock clock
     + reserve(int, int) : Reservation
     + findAll() : List<Reservation>
     + fulfill(int) : Loan
@@ -102,30 +91,37 @@ package "service" <<service>> {
 }
 
 package "dao" <<dao>> {
-    class BaseDao<T> {
-    # Dao<T, Integer> dao
-    + findAll() : List<T>
-    + findById(int) : T
-    + create(T) : int
-    + update(T) : int
-    + delete(T) : int
-    + transaction(Callable<R>) : R
-  }
-
   class BookDao {
-    + BookDao(ConnectionSource)
+    - Dao<Book, Integer> dao
+    + findAll() : List<Book>
+    + findById(int) : Book
+    + create(Book) : void
+    + update(Book) : void
+    + delete(Book) : void
   }
 
   class MemberDao {
-    + MemberDao(ConnectionSource)
+    - Dao<Member, Integer> dao
+    + findAll() : List<Member>
+    + findById(int) : Member
+    + create(Member) : void
+    + update(Member) : void
   }
 
   class LoanDao {
-    + LoanDao(ConnectionSource)
+    - Dao<Loan, Integer> dao
+    + findAll() : List<Loan>
+    + findById(int) : Loan
+    + create(Loan) : void
+    + update(Loan) : void
   }
 
   class ReservationDao {
-    + ReservationDao(ConnectionSource)
+    - Dao<Reservation, Integer> dao
+    + findAll() : List<Reservation>
+    + findById(int) : Reservation
+    + create(Reservation) : void
+    + update(Reservation) : void
   }
 }
 
@@ -218,17 +214,6 @@ package "model" <<model>> {
 }
 
 package "db" <<db>> {
-
-  class LocalDatePersister {
-    - {static} LocalDatePersister SINGLETON
-    - LocalDatePersister()
-    + {static} getSingleton() : LocalDatePersister
-    + parseDefaultString(FieldType, String) : Object
-    + resultToSqlArg(FieldType, DatabaseResults, int) : Object
-    + sqlArgToJava(FieldType, Object, int) : Object
-    + javaToSqlArg(FieldType, Object) : Object
-  }
-
   class Database {
     - ConnectionSource connectionSource
     + connectionSource() : ConnectionSource
@@ -236,39 +221,32 @@ package "db" <<db>> {
   }
 }
 
+
 ' ----- controller -> service -----
 BookController "1" --> "1" BookService
-BookController "1" --> "1" BookDao
-LoanController "1" --> "1" MemberService
 LoanController "1" --> "1" LoanService
 MemberController "1" --> "1" MemberService
 ReservationController "1" --> "1" ReservationService
 
+
 ' ----- service -> dao -----
 BookService "1" --> "1" BookDao
 LoanService "1" --> "1" LoanDao
-LoanService "1" --> "1" BookDao
+LoanService "1" --> "1" MemberDao
+LoanService "1" --> "1" BookService
 MemberService "1" --> "1" MemberDao
-MemberService "1" --> "1" BookDao
-MemberService "1" --> "1" LoanDao
 ReservationService "1" --> "1" ReservationDao
-ReservationService "1" --> "1" BookDao
 ReservationService "1" --> "1" MemberDao
 ReservationService "1" --> "1" LoanDao
+ReservationService "1" --> "1" BookService
 
-' ----- inheritance -----
-NotFoundException --|> RuntimeException
-BookDao --|> BaseDao
-MemberDao --|> BaseDao
-LoanDao --|> BaseDao
-ReservationDao --|> BaseDao
 
-' ----- policy / persister -----
-MemberService ..> LoanPolicy
-ReservationService ..> LoanPolicy
-BookService ..> NotFoundException
-Loan ..> LocalDatePersister
-Reservation ..> LocalDatePersister
+' ----- stage 2: the clock and the errors -----
+LoanService ..> Clock
+ReservationService ..> Clock
+LoanService ..> NotFoundException
+ReservationService ..> NotFoundException
+
 
 
 ' ----- dao -> model / db -----

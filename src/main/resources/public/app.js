@@ -1,9 +1,6 @@
 const esc = (s) => (s ?? '').toString().replace(/[&<>"]/g, (c) => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]
 ));
-const now = new Date();
-const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-const isOverdue = (l) => !l.returned && l.dueDate < today;
 
 class Api {
     static async request(path, options = {}) {
@@ -150,7 +147,7 @@ class LibraryApp {
                     <td>${esc(l.dueDate)}</td>
                     <td>${l.returned
                         ? '<span class="tag is-success is-light">Returned</span>'
-                        : isOverdue(l)
+                        : l.overdue
                             ? '<span class="tag is-danger is-light">Overdue</span>'
                             : '<span class="tag is-warning is-light">On loan</span>'}</td>
                     <td>${l.overdueFee > 0
@@ -194,7 +191,7 @@ class LibraryApp {
         document.getElementById('stat-books').textContent = this.books.length;
         document.getElementById('stat-members').textContent = this.members.length;
         document.getElementById('stat-loans').textContent = this.loans.filter((l) => !l.returned).length;
-        document.getElementById('stat-overdue').textContent = this.loans.filter((l) => isOverdue(l)).length;
+        document.getElementById('stat-overdue').textContent = this.loans.filter((l) => l.overdue).length;
     }
 
     emptyRow(colspan, message) {

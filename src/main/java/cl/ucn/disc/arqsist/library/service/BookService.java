@@ -1,91 +1,82 @@
-/*
- * Copyright (c) 2026. Arquitectura de Sistemas, DISC, UCN, Antofagasta.
- */
 package cl.ucn.disc.arqsist.library.service;
 
 import cl.ucn.disc.arqsist.library.dao.BookDao;
 import cl.ucn.disc.arqsist.library.model.Book;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Catalog rules. This is the only class that changes the copy count of a book.
+ * Applies catalog and copy-count operations to books.
  */
 public final class BookService {
 
-    /** The book persistence layer. */
+    /** Persistence component used for book data. */
     private final BookDao dao;
 
     /**
-     * Creates the service.
+     * Creates the service with its book persistence component.
      *
-     * @param dao the book DAO.
+     * @param dao DAO used to load and persist books.
      */
     public BookService(BookDao dao) {
         this.dao = dao;
     }
 
     /**
-     * Lists every book.
+     * Lists every book in the catalog.
      *
-     * @return all books.
+     * @return all persisted books.
+     * @throws SQLException if the catalog cannot be loaded.
      */
-    public List<Book> listAll() {
+    public List<Book> listAll() throws SQLException {
         return dao.findAll();
     }
 
     /**
-     * Finds a book by id.
+     * Looks up a book by identifier.
      *
-     * @param id the book id.
-     * @return the book, or null when it does not exist.
+     * @param id book identifier.
+     * @return the book, or {@code null} if it does not exist.
+     * @throws SQLException if the lookup fails.
      */
-    public Book findById(int id) {
+    public Book findById(int id) throws SQLException {
         return dao.findById(id);
     }
 
     /**
-     * Creates a book with every copy available.
+     * Creates a book, initializing its available copies to its total copies.
      *
-     * @param book the book to create.
+     * @param book book to add to the catalog.
      * @return the created book.
+     * @throws SQLException if persistence fails.
      */
-    public Book create(Book book) {
+    public Book create(Book book) throws SQLException {
         book.setAvailableCopies(book.getTotalCopies());
         dao.create(book);
         return book;
     }
 
     /**
-     * Takes one copy out of the inventory.
+     * Decreases the available-copy count for a borrowed book.
      *
-     * @param bookId the book id.
-     * @throws NotFoundException if the book does not exist.
-     * @throws IllegalStateException if the book has no available copies.
+     * @param bookId identifier of the borrowed book.
+     * @throws SQLException if the book cannot be loaded or updated.
      */
-    public void borrow(int bookId) {
+    public void borrow(int bookId) throws SQLException {
         Book book = dao.findById(bookId);
-        if (book == null) {
-            throw new NotFoundException("Book not found: " + bookId);
-        }
-        if (book.getAvailableCopies() <= 0) {
-            throw new IllegalStateException("No available copies of book " + bookId);
-        }
         book.setAvailableCopies(book.getAvailableCopies() - 1);
         dao.update(book);
     }
 
     /**
-     * Puts one copy back into the inventory.
+     * Increases the available-copy count for a returned book.
      *
-     * @param bookId the book id.
-     * @throws NotFoundException if the book does not exist.
+     * @param bookId identifier of the returned book.
+     * @throws SQLException if the book cannot be loaded or updated.
      */
-    public void returnCopy(int bookId) {
+    public void returnCopy(int bookId) throws SQLException {
         Book book = dao.findById(bookId);
-        if (book == null) {
-            throw new NotFoundException("Book not found: " + bookId);
-        }
         book.setAvailableCopies(book.getAvailableCopies() + 1);
         dao.update(book);
     }
