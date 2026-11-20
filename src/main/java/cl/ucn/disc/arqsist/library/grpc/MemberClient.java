@@ -112,6 +112,26 @@ public final class MemberClient implements AutoCloseable {
     }
 
     /**
+     * Search the members whose name contains a fragment.
+     *
+     * @param query the name fragment
+     * @return the matching members, ordered by ID; an empty list when none matches
+     * @throws IllegalArgumentException if the query is blank
+     */
+    public List<Member> search(String query) {
+        try {
+            ListMembersReply reply = stub.withDeadlineAfter(DEADLINE_SECONDS, TimeUnit.SECONDS)
+                    .searchMembers(SearchMembersRequest.newBuilder().setQuery(query).build());
+            return reply.getMembersList().stream()
+                    .map(MemberClient::toMember)
+                    .toList();
+        } catch (StatusRuntimeException e) {
+            // INVALID_ARGUMENT becomes IllegalArgumentException.
+            throw toException(e);
+        }
+    }
+
+    /**
      * Close the channel. Wait for the running calls to end.
      */
     @Override
