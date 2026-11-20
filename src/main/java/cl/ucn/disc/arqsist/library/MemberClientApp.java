@@ -23,12 +23,6 @@ public final class MemberClientApp {
     private static final Logger log = LoggerFactory.getLogger(MemberClientApp.class);
 
     /**
-     * The Constructor. The class holds only the entry point, so nobody creates instances.
-     */
-    private MemberClientApp() {
-    }
-
-    /**
      * List all members and the members given as arguments.
      * Exit with code 1 when a call fails.
      *

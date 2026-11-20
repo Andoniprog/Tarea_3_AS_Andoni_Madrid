@@ -79,8 +79,6 @@ public final class MemberClient implements AutoCloseable {
     }
 
     /**
-     * List all members.
-     *
      * @return a list of all members.
      */
     public List<Member> findAll() {

@@ -40,8 +40,6 @@ public final class MemberService {
     }
 
     /**
-     * List all members.
-     *
      * @return a list of all members.
      */
     public List<Member> findAll() {

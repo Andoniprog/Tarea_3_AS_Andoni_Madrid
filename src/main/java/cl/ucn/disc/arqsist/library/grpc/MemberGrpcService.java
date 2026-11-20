@@ -26,10 +26,6 @@ public final class MemberGrpcService extends MemberServiceGrpc.MemberServiceImpl
      * The address of the gRPC server. App and MemberClientApp use it.
      */
     public static final String HOST = "127.0.0.1";
-
-    /**
-     * The port of the gRPC server. App and MemberClientApp use it.
-     */
     public static final int PORT = 50051;
 
     /**

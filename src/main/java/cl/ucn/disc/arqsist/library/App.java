@@ -50,19 +50,7 @@ public final class App {
     private static final long STOP_TIMEOUT_SECONDS = 5;
 
     /**
-     * The Constructor. The class holds only the entry point, so nobody creates instances.
-     */
-    private App() {
-    }
-
-    /**
      * The main method of the application.
-     *
-     * <p>Opens the database, wires the DAOs, services, and controllers, and starts
-     * the member gRPC server on 127.0.0.1:50051 and the web server on port 7070.</p>
-     *
-     * @param args the command line arguments (unused)
-     * @throws Exception if the database, the gRPC server, or the web server fails to start
      */
     public static void main(String[] args) throws Exception {
 
