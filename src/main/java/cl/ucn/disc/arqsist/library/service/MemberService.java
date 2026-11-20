@@ -61,4 +61,23 @@ public final class MemberService {
         }
         return member;
     }
+
+    /**
+     * Search the members whose name contains a fragment.
+     *
+     * The match is a literal substring, case-insensitive for ASCII letters.
+     * The reply is ordered by member ID, ascending. No match gives an empty list.
+     *
+     * @param query the name fragment
+     * @return the matching members
+     * @throws IllegalArgumentException if the query is blank after the trim
+     */
+    public List<Member> search(String query) {
+        // Trim first: a query of spaces only is blank.
+        String fragment = query == null ? "" : query.strip();
+        if (fragment.isEmpty()) {
+            throw new IllegalArgumentException("The search query must not be blank");
+        }
+        return memberDao.searchByName(fragment);
+    }
 }

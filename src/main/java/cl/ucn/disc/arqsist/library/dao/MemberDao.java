@@ -3,6 +3,8 @@ package cl.ucn.disc.arqsist.library.dao;
 import cl.ucn.disc.arqsist.library.model.Member;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.field.SqlType;
+import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.support.ConnectionSource;
 
 import java.sql.SQLException;
@@ -56,6 +58,30 @@ public final class MemberDao {
             return dao.queryForId(id);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to load member " + id, e);
+        }
+    }
+
+    /**
+     * Finds the members whose name contains a fragment, ordered by id ascending.
+     *
+     * <p>The match is literal: {@code instr} finds the fragment as plain text, so
+     * {@code %} and {@code _} are not wildcards. {@code lower} folds ASCII letters
+     * only, so the match is case-insensitive for ASCII. The fragment travels as a
+     * bound {@link SelectArg}, never inside the SQL text.</p>
+     *
+     * @param fragment the text to find inside the name.
+     * @return the matching members, or an empty list when none matches.
+     * @throws RuntimeException if the query fails.
+     */
+    public List<Member> searchByName(String fragment) {
+        try {
+            return dao.queryBuilder()
+                    .orderBy("id", true)
+                    .where()
+                    .raw("instr(lower(name), lower(?)) > 0", new SelectArg(SqlType.STRING, fragment))
+                    .query();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to search members", e);
         }
     }
 
