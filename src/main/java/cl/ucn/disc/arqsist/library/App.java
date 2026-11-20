@@ -58,8 +58,8 @@ public final class App {
     /**
      * The main method of the application.
      *
-     * Opens the database, wires the DAOs, services, and controllers, and starts
-     * the member gRPC server on 127.0.0.1:50051 and the web server on port 7070.
+     * <p>Opens the database, wires the DAOs, services, and controllers, and starts
+     * the member gRPC server on 127.0.0.1:50051 and the web server on port 7070.</p>
      *
      * @param args the command line arguments (unused)
      * @throws Exception if the database, the gRPC server, or the web server fails to start

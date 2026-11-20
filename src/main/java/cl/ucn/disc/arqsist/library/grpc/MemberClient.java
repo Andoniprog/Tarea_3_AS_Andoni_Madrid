@@ -116,9 +116,9 @@ public final class MemberClient implements AutoCloseable {
     /**
      * Search the members whose name contains a fragment.
      *
-     * @param query the name fragment
+     * @param query the name fragment, not null
      * @return the matching members, ordered by ID; an empty list when none matches
-     * @throws IllegalArgumentException if the query is blank
+     * @throws IllegalArgumentException if the query is blank: the server answers INVALID_ARGUMENT
      */
     public List<Member> search(String query) {
         try {

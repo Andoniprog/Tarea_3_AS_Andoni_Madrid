@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Provides ORMLite persistence operations for members.
  *
- * <p>The query methods wrap {@link SQLException} in an unchecked exception, so the
+ * <p>Every method except the constructor wraps {@link SQLException} in a {@link RuntimeException}, so the
  * member service and the gRPC adapter do not handle database checked exceptions.
  * A database failure reaches a gRPC client as INTERNAL.</p>
  */

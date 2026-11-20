@@ -60,6 +60,9 @@ public final class BookService {
     /**
      * Decreases the available-copy count for a borrowed book.
      *
+     * <p>The caller checks that the book exists. The method does not check that a
+     * copy is available, so the count can drop below zero.</p>
+     *
      * @param bookId identifier of the borrowed book.
      * @throws SQLException if the book cannot be loaded or updated.
      */
@@ -71,6 +74,8 @@ public final class BookService {
 
     /**
      * Increases the available-copy count for a returned book.
+     *
+     * <p>The caller checks that the book exists.</p>
      *
      * @param bookId identifier of the returned book.
      * @throws SQLException if the book cannot be loaded or updated.

@@ -44,7 +44,10 @@ public final class LoanService {
     }
 
     /**
-     * Checks out an available book to an existing member.
+     * Checks out a book to an existing member.
+     *
+     * <p>The copy-count update and the new loan run in one transaction. The method
+     * does not check that the book has an available copy.</p>
      *
      * @param memberId identifier of the borrowing member.
      * @param bookId identifier of the borrowed book.

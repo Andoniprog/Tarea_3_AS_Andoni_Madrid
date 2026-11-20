@@ -39,7 +39,10 @@ public final class Loan {
     @DatabaseField
     private boolean returned;
 
-    /** Late fee charged when the loan is returned after its due date. */
+    /**
+     * Late fee of the loan. It is stored when the loan is returned after its due date;
+     * LoanService also fills it in memory for an open overdue loan.
+     */
     @DatabaseField
     private double overdueFee;
 
@@ -52,8 +55,8 @@ public final class Loan {
      *
      * @param member member borrowing the book.
      * @param book book being borrowed.
-     * @param loanDate loan start date.
-     * @param dueDate due date.
+     * @param loanDate loan start date, in ISO-8601 form (yyyy-MM-dd).
+     * @param dueDate due date, in ISO-8601 form (yyyy-MM-dd).
      */
     public Loan(Member member, Book book, String loanDate, String dueDate) {
         this.member = member;

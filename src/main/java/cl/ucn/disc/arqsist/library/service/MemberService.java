@@ -67,12 +67,13 @@ public final class MemberService {
     /**
      * Search the members whose name contains a fragment.
      *
-     * The match is a literal substring, case-insensitive for ASCII letters.
-     * The reply is ordered by member ID, ascending. No match gives an empty list.
+     * <p>The method trims the query. The match is a literal substring, case-insensitive
+     * for ASCII letters. The result is ordered by member ID, ascending. No match gives
+     * an empty list.</p>
      *
      * @param query the name fragment
      * @return the matching members
-     * @throws IllegalArgumentException if the query is blank after the trim
+     * @throws IllegalArgumentException if the query is null, or blank after the trim
      */
     public List<Member> search(String query) {
         // Trim first: a query of spaces only is blank.

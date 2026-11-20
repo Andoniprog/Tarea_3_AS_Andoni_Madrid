@@ -40,7 +40,7 @@ public final class Reservation {
      *
      * @param member member making the reservation.
      * @param book book being reserved.
-     * @param reservedAt reservation creation date.
+     * @param reservedAt reservation creation date, in ISO-8601 form (yyyy-MM-dd).
      */
     public Reservation(Member member, Book book, String reservedAt) {
         this.member = member;
