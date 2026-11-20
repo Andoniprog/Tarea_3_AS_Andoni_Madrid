@@ -64,12 +64,15 @@ shared `Javalin` instance. Static files in `src/main/resources/public` are serve
 
 ```
 src/main/java/cl/ucn/disc/arqsist/library/
-├── App.java                      # entry point & manual DI wiring
+├── App.java                      # entry point & manual DI wiring, starts REST and gRPC
+├── MemberClientApp.java          # command line gRPC client (./gradlew runClient)
 ├── controller/                   # Javalin route handlers
 ├── service/                      # business logic
 ├── dao/                          # ORMLite DAO wrappers
 ├── db/Database.java              # connection, tables, seeding
+├── grpc/                         # MemberGrpcService (server adapter) and MemberClient
 └── model/                        # Book, Member, Loan, Reservation
+src/main/proto/member.proto       # gRPC contract of the member service
 src/main/resources/public/        # static frontend (index.html, app.js)
 src/test/java/...                 # JUnit 5 tests
 docs/class-diagram.puml           # PlantUML class diagram
